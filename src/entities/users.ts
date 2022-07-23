@@ -1,7 +1,7 @@
-import { Exclude, } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { IsString, MaxLength } from 'class-validator';
-import BaseEntity from 'src/common/base.entity';
-import { Gender, UserRoles } from 'src/interfaces/IUser';
+import BaseEntity from 'src/common/bases/base.entity';
+import { Gender, UserRoles } from 'src/common/interfaces/IUser';
 import { Column, Entity } from 'typeorm';
 
 @Entity()
