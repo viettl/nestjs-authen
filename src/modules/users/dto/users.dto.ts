@@ -1,7 +1,8 @@
 import { Gender, UserRoles } from '../../../common/interfaces/IUser';
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { BaseDto } from 'src/common/bases/base.dto';
 import { UserEntity } from 'src/entities/users';
+import { IsString } from 'class-validator';
 
 export class UserDto extends BaseDto {
   @ApiPropertyOptional()
@@ -27,4 +28,26 @@ export class UserDto extends BaseDto {
     this.gender = user.gender;
     this.phoneNumber = user.phoneNumber;
   }
+}
+
+export class Password {
+  @ApiProperty()
+  @IsString()
+  password: string;
+}
+
+export class CreateUserDto extends Password {
+  @ApiProperty()
+  @IsString()
+  email: string;
+}
+
+export class LoginDto extends Password {
+  @ApiProperty()
+  @IsString()
+  email: string;
+}
+
+export class CredentialDto extends Password {
+  id: string;
 }

@@ -2,6 +2,7 @@ import {
   BaseEntity as IBaseEntity,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 export class Base {
@@ -12,7 +13,7 @@ export class Base {
   ) {}
 }
 
-export class BaseEntity extends IBaseEntity {
+export abstract class BaseEntity extends IBaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,7 +24,7 @@ export class BaseEntity extends IBaseEntity {
   })
   createdAt: Date;
 
-  @CreateDateColumn({
+  @UpdateDateColumn({
     default: () => 'CURRENT_TIMESTAMP',
     type: 'timestamp',
     name: 'updated_at',
