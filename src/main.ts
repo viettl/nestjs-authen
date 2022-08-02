@@ -24,7 +24,6 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
-  // app.useGlobalFilters(new AllExceptionsFilter());
 
   // app.useGlobalFilters(new HttpErrorFilter());
 

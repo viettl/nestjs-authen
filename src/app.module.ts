@@ -5,14 +5,17 @@ import { ConfigModule } from '@nestjs/config';
 import PostgresDatabaseModule from './database/connect-postgres';
 import { winstonOptions } from './utils/log';
 import { UserModule } from './modules/users/users.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpErrorFilter } from './common/exceptions/server.exception';
+import { TransformInterceptor } from '@/common/interceptors/response.interceptor';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
     PostgresDatabaseModule,
     UserModule,
     AuthModule,
+    RolesModule,
     ConfigModule.forRoot({}),
     WinstonModule.forRoot(winstonOptions),
   ],
@@ -21,6 +24,10 @@ import { HttpErrorFilter } from './common/exceptions/server.exception';
     {
       provide: APP_FILTER,
       useClass: HttpErrorFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
   ],
 })

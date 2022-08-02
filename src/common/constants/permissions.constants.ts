@@ -1,0 +1,2 @@
+export const P_CHANGE_PASSWORD = 'CHANGE_PASSWORD';
+export const P_UPDATE_PROFILE = 'UPDATE_PROFILE';
