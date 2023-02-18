@@ -7,6 +7,7 @@ import { API_CONFIG_REPOSITORY_TOKEN } from './domain/config.repository';
 import { ApiConfigService } from './domain/config.service';
 import { ConfigItemEntity } from './typeorm/config-item.entity';
 import { TypeormApiConfigRepository } from './typeorm/typeorm.config.repository';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
   imports: [
