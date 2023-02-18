@@ -2,7 +2,6 @@ import BaseEntity from './../common/bases/base.entity';
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import { RolesEntity } from './roles';
 import { PermissionsEntity } from './permissions';
-import { UserEntity } from './users';
 
 @Entity({
   name: 'role_permission',
@@ -19,7 +18,7 @@ export class RolePermissionEntity extends BaseEntity {
     },
   )
   @JoinColumn({ name: 'roleId' })
-  role: UserEntity;
+  role: RolesEntity;
 
   @ManyToOne(
     (type) => PermissionsEntity,
@@ -29,5 +28,5 @@ export class RolePermissionEntity extends BaseEntity {
     },
   )
   @JoinColumn({ name: 'permissionId' })
-  permission: PermissionsEntity;
+  permission: Partial<PermissionsEntity>;
 }

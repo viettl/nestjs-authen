@@ -1,3 +1,4 @@
+import { PermissionsModule } from './modules/permissions/permissions.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { WinstonModule } from 'nest-winston';
 import { Module } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { RolesModule } from './modules/roles/roles.module';
     UserModule,
     AuthModule,
     RolesModule,
+    PermissionsModule,
     ConfigModule.forRoot({}),
     WinstonModule.forRoot(winstonOptions),
   ],
