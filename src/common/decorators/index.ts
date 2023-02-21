@@ -1,9 +1,10 @@
 import { SetMetadata } from '@nestjs/common';
-
-export const IS_PUBLIC_KEY = 'isPublic';
-export const ROLES_KEY = 'roles';
-export const PERMISSIONS_KEY = 'permissions';
-export const ABILITY_KEY = 'ability';
+import {
+  IS_PUBLIC_KEY,
+  ROLES_KEY,
+  PERMISSIONS_KEY,
+  ABILITY_KEY,
+} from '../constants/auth-meta.constant';
 
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 

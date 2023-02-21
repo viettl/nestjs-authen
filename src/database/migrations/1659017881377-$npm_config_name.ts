@@ -13,7 +13,7 @@ import { hashPassword } from '../../utils/password';
 
 export class $npmConfigName1659017881377 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const hashPass = await hashPassword('123213');
+    const hashPass = await hashPassword('123123');
 
     /* ------------------------------ Cleaning data ----------------------------- */
 

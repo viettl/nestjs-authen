@@ -20,6 +20,8 @@ export class RolesGuard implements CanActivate {
       user,
       user: { role },
     } = request;
+
+    // auto grant access to admins
     if (role === UserRoles.ADMIN) return true;
     // const hasRole = () =>
     //   role.some((role) => !!roles.find((item) => item === role));

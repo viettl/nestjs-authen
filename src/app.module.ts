@@ -10,9 +10,14 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpErrorFilter } from './common/exceptions/server.exception';
 import { TransformInterceptor } from '@/common/interceptors/response.interceptor';
 import { RolesModule } from './modules/roles/roles.module';
-
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './modules/cronjob/cron.module';
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    // call initialize schedule.
+    // It also registers any declarative cron jobs, timeouts, and intervals existing within
+    // out application context
     PostgresDatabaseModule,
     UserModule,
     AuthModule,
@@ -20,6 +25,7 @@ import { RolesModule } from './modules/roles/roles.module';
     PermissionsModule,
     ConfigModule.forRoot({}),
     WinstonModule.forRoot(winstonOptions),
+    // CronModule,
   ],
   controllers: [],
   providers: [

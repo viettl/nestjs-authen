@@ -1,7 +1,7 @@
 import { PermissionsEntity } from '@/entities';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PERMISSIONS_KEY } from '../decorators';
+import { PERMISSIONS_KEY } from '../constants/auth-meta.constant';
 import { UserRoles } from '../interfaces/IUser';
 
 @Injectable()

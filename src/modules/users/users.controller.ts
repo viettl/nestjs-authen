@@ -12,6 +12,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -31,6 +32,7 @@ import { USER_CREATED } from '../../common/constants/response.constants';
 import { Auth } from '@/common/decorators/role.decorator';
 import { UserRoles } from '@/common/interfaces/IUser';
 import { Permissions, Roles } from '../../common/decorators/index';
+import { TimeoutInterceptor } from '@/common/interceptors/timeout.interceptor';
 
 @ApiTags('user')
 @Controller('user')
@@ -74,8 +76,9 @@ export class UsersController {
 
   @Post('/update-password')
   @ApiOperation({ summary: "Update user''s password" })
-  @Roles(UserRoles.ADMIN, UserRoles.USER)
-  @Permissions(P_UPDATE_PROFILE, P_CHANGE_PASSWORD)
+  // @Roles(UserRoles.ADMIN, UserRoles.USER)
+  @Roles(UserRoles.USER)
+  @Permissions(P_UPDATE_PROFILE)
   @Auth()
   updatePassword(@Req() req: Request) {
     return {
@@ -90,5 +93,11 @@ export class UsersController {
     return {
       data: users,
     };
+  }
+
+  @Get('/timeout-interceptor')
+  @UseInterceptors(TimeoutInterceptor)
+  async getTimeoutInterceptor() {
+    await new Promise((r) => setTimeout(r, 2000));
   }
 }
