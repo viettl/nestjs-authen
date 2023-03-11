@@ -1,17 +1,18 @@
+import { PermissionsEntity } from '@/entities';
+import { RefreshTokenEntity } from '@/entities/refresh-token';
+import { RolesEntity } from '@/entities/roles';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { UserRoleEntity } from '../../entities/user_role';
+import { UserEntity } from '../../entities/users';
+import { UserModule } from '../users/users.module';
 import { RolePermissionEntity } from './../../entities/role_permission';
 import { AuthController } from './auth.controllder';
 import { AuthService } from './auth.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
 import { JwtStrategy } from './jwt.strategy';
-import { RefreshTokenEntity } from '@/entities/refresh-token';
-import { JwtService } from '@nestjs/jwt';
-import { UserRoleEntity } from '../../entities/user_role';
-import { UserEntity } from '../../entities/users';
-import { RolesEntity } from '@/entities/roles';
-import { RolePermissionService } from '../role-permission/role-permission.service';
-import { UserModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from '../users/users.module';
       UserRoleEntity,
       RolesEntity,
       RolePermissionEntity,
+      PermissionsEntity,
     ]),
   ],
   providers: [
@@ -30,7 +32,7 @@ import { UserModule } from '../users/users.module';
     AuthService,
     JwtService,
     // UsersService,
-    RolePermissionService,
+    // RolePermissionService,
     // {
     //   provide: APP_INTERCEPTOR,
     //   useClass: TransformInterceptor,

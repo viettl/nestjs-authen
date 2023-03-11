@@ -1,7 +1,4 @@
-import {
-  P_UPDATE_PROFILE,
-  P_CHANGE_PASSWORD,
-} from './../../common/constants/permissions.constants';
+import { P_UPDATE_PROFILE } from './../../common/constants/permissions.constants';
 import { CreateUserDto, UserDto } from './dto/users.dto';
 import {
   Body,

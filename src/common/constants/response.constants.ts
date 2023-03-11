@@ -5,3 +5,4 @@ export const USER_DELETED = 'User Deleted';
 /* ---------------------------------- role ---------------------------------- */
 
 export const ROLE_CREATED = 'Role Created';
+export const PERMISSION_ADDED_TO_ROLE = 'Permission Added To Role';

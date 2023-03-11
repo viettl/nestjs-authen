@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { CreatePermissionDto } from '../permissions/permissions.dto';
 
 export class CreateRoleWithPermissionsDto {
   @ApiProperty()
@@ -9,5 +8,5 @@ export class CreateRoleWithPermissionsDto {
 
   @ApiProperty({})
   @IsNotEmpty()
-  permissions?: CreatePermissionDto[];
+  permissions?: any[];
 }
