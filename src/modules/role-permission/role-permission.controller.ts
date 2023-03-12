@@ -10,7 +10,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -97,10 +96,10 @@ export class RolePermissionController {
         throw new Error('Role not found');
       }
 
-      return {
-        statusCode: HttpStatus.OK,
-        // data: permissions,
-      };
+      // return {
+      // statusCode: HttpStatus.OK,
+      // data: permissions,
+      // };
       // update the permissions of the role
     } catch (error) {
       throw error;

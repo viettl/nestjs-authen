@@ -3,6 +3,8 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
@@ -32,9 +34,19 @@ export class TransformInterceptor<T>
         ) ?? '';
 
       return next.handle().pipe(
-        map((result) => {
+        map((result = {}) => {
           const { statusCode, data = [], ...rest } = result;
-          console.log(rest);
+          console.log('throw new HttpException', statusCode, data, rest);
+          if (!statusCode) {
+            throw new HttpException(
+              {
+                statusCode: HttpStatus.NOT_IMPLEMENTED,
+                message: responseMessage,
+                ...rest,
+              },
+              HttpStatus.NOT_IMPLEMENTED,
+            );
+          }
           return {
             data,
             statusCode: statusCode,
