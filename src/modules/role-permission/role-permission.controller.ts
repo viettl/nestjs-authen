@@ -2,7 +2,7 @@ import {
   ROLE_CREATED,
   PERMISSION_ADDED_TO_ROLE,
 } from '@/common/constants/response.constants';
-import { Roles } from '@/common/decorators';
+import { Permissions, Roles } from '@/common/decorators';
 import { ResponseMessage } from '@/common/decorators/response.decorator';
 import { Auth } from '@/common/decorators/role.decorator';
 import { UserRoles } from '@/common/interfaces/IUser';
@@ -10,6 +10,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -19,7 +20,9 @@ import {
 import { CreateRoleDto } from '../roles/roles.dto';
 import { RolesService } from '../roles/roles.services';
 import { RolePermissionService } from '@/modules/role-permission/role-permission.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('role-permission')
 @Controller('role-permission')
 export class RolePermissionController {
   constructor(
@@ -77,20 +80,27 @@ export class RolePermissionController {
     }
   }
 
-  @Post('assign-permissions')
-  @UsePipes(ValidationPipe)
+  @Post('/assigns')
+  // @UsePipes(ValidationPipe)
   @Roles(UserRoles.ADMIN)
+  @Permissions(UserRoles.ADMIN)
   @Auth()
+  // @UseGuards(JwtGuard)
   @ResponseMessage(PERMISSION_ADDED_TO_ROLE)
   async addPermissionsToRole(
     @Body()
     body: any,
   ) {
     try {
-      const role = this.rolesService.findById(body.roleId);
+      const role = this.rolesService.findById(body?.roleId);
       if (!role) {
         throw new Error('Role not found');
       }
+
+      return {
+        statusCode: HttpStatus.OK,
+        // data: permissions,
+      };
       // update the permissions of the role
     } catch (error) {
       throw error;

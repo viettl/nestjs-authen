@@ -11,7 +11,8 @@ import { HttpErrorFilter } from './common/exceptions/server.exception';
 import { TransformInterceptor } from '@/common/interceptors/response.interceptor';
 import { RolesModule } from './modules/roles/roles.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { CronModule } from './modules/cronjob/cron.module';
+import { RolePermissionModule } from '@/modules/role-permission/role-permisison.module';
+// import { CronModule } from './modules/cronjob/cron.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -23,6 +24,7 @@ import { CronModule } from './modules/cronjob/cron.module';
     AuthModule,
     RolesModule,
     PermissionsModule,
+    RolePermissionModule,
     ConfigModule.forRoot({}),
     WinstonModule.forRoot(winstonOptions),
     // CronModule,
