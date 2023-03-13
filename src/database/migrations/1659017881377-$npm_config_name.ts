@@ -13,28 +13,28 @@ import { hashPassword } from '../../utils/password';
 
 export class $npmConfigName1659017881377 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    // console.log('Running migration', queryRunner);
     const hashPass = await hashPassword('123123');
 
     /* ------------------------------ Cleaning data ----------------------------- */
 
-    await queryRunner.query(`DELETE FROM user_role`);
+    // await queryRunner.query(`DELETE FROM user_role`);
     // await queryRunner.query(`DELETE FROM roles`);
     // await queryRunner.query(`DELETE FROM permissions`);
+
+    const permissionRepository =
+      queryRunner.connection.getRepository(PermissionsEntity);
+    await permissionRepository.createQueryBuilder().delete().execute();
+    const rolePermisisonRepository =
+      queryRunner.connection.getRepository(RolePermissionEntity);
+    await rolePermisisonRepository.createQueryBuilder().delete().execute();
 
     const userRoleRepository =
       queryRunner.connection.getRepository(UserRoleEntity);
     await userRoleRepository.createQueryBuilder().delete().execute();
 
-    const rolePermisisonRepository =
-      queryRunner.connection.getRepository(RolePermissionEntity);
-    await rolePermisisonRepository.createQueryBuilder().delete().execute();
-
     const userRepository = queryRunner.connection.getRepository(UserEntity);
     await userRepository.createQueryBuilder().delete().execute();
-
-    const permissionRepository =
-      queryRunner.connection.getRepository(PermissionsEntity);
-    await permissionRepository.createQueryBuilder().delete().execute();
 
     const roleRepository = queryRunner.connection.getRepository(RolesEntity);
     await roleRepository.createQueryBuilder().delete().execute();
@@ -81,6 +81,14 @@ export class $npmConfigName1659017881377 implements MigrationInterface {
       })
       .execute();
 
+    const p_test = await permissionRepository
+      .createQueryBuilder()
+      .insert()
+      .values({
+        name: 'test',
+        description: 'test',
+      })
+      .execute();
     /* ------------------------------ Insert roles ------------------------------ */
 
     const r_admin = await roleRepository
@@ -110,6 +118,15 @@ export class $npmConfigName1659017881377 implements MigrationInterface {
       .values({
         role: r_user.raw[0].id,
         permission: p_changePass.raw[0].id,
+      })
+      .execute();
+
+    const rp_userTestPermission = await rolePermisisonRepository
+      .createQueryBuilder()
+      .insert()
+      .values({
+        role: r_user.raw[0].id,
+        permission: p_test.raw[0].id,
       })
       .execute();
 

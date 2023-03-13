@@ -1,5 +1,5 @@
 import { RolePermissionEntity } from '@/entities/role_permission';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RolesService } from '../roles/roles.services';
@@ -14,9 +14,9 @@ export class RolePermissionService {
   constructor(
     @InjectRepository(RolePermissionEntity)
     private rolePermissionRepository: Repository<RolePermissionEntity>,
-
+    @InjectRepository(RolesEntity)
+    private rolesRepository: Repository<RolesEntity>,
     private roleService: RolesService,
-
     private permissionsService: PermissionsService,
   ) {}
 
@@ -24,10 +24,10 @@ export class RolePermissionService {
   async getRolePermission(roleId: string) {
     const rolePermissions = await this.rolePermissionRepository.query(
       `
-      SELECT p.name, rp."isActive", p.id
+      SELECT p.name, rp."is_active", p.id
       FROM role_permission rp
-      LEFT JOIN permissions p ON p.id = rp."permissionId"
-      WHERE rp."roleId" = $1`,
+      LEFT JOIN permissions p ON p.id = rp."permission_id"
+      WHERE rp."role_id" = $1`,
       [roleId],
     );
     return rolePermissions;
@@ -61,8 +61,8 @@ export class RolePermissionService {
       const role = new RolesEntity();
       role.name = roleDto.name;
       role.description = roleDto.description;
-      role.isCustomRole = true;
-      role.inheritedFromRoleId = roleDto.inheritedFromRoleId;
+      role.is_custom_role = true;
+      role.inherited_from_role_id = roleDto.inherited_from_role_id;
       const roleCreated = await this.save(role);
 
       // save role permissions
@@ -74,7 +74,7 @@ export class RolePermissionService {
 
       permissions.forEach((permission) => {
         const rolePermission = new RolePermissionEntity();
-        rolePermission.isActive = true;
+        rolePermission.is_active = true;
         rolePermission.role = roleCreated;
         rolePermission.permission = permission;
         this.save(rolePermission);
@@ -102,11 +102,14 @@ export class RolePermissionService {
     return await this.getRolePermission(roleId);
   }
 
-  // add/remove/modify the permissions of a role
-  async updateRolePermissions(
-    roleId: string,
-    permissionIds: CreateRoleWithPermissionsDto[],
-  ) {
+  /**
+   * It updates the permissions of a role by setting the is_active flag to false for all permissions
+   * that are not in the permissionIds array, and then it inserts the permissionIds array into the
+   * role_permission table, setting the is_active flag to true
+   * @param {string} roleId - The ID of the role to update
+   * @param {string[]} permissionIds - The array of permission IDs to be assigned to the role.
+   */
+  async updateRolePermissions(roleId: string, permissionIds: string[]) {
     const role = await this.roleService.findById(roleId);
     if (!role) {
       throw new Error(`Role with ID ${roleId} not found`);
@@ -117,35 +120,50 @@ export class RolePermissionService {
       throw new Error(`One or more permission IDs not found`);
     }
 
-    const role11 = await this.roleService.findOneOrFail(roleId, {
-      relations: ['rolePermission', 'rolePermission.permission'],
-    });
-    console.log(
-      '🚀 ~ file: role-permission.service.ts:70 ~ RolePermissionService ~ role11:',
-      role11,
+    await this.rolePermissionRepository
+      .createQueryBuilder()
+      .update(RolePermissionEntity)
+      .set({ is_active: false })
+      .where(`role_id = :roleId AND permission_id NOT IN (:...permissionIds)`, {
+        roleId,
+        permissionIds,
+      })
+      .execute();
+
+    const values = permissionIds.map((permissionId) => [
+      roleId,
+      permissionId,
+      true,
+    ]);
+
+    const query = `
+      INSERT INTO role_permission (role_id, permission_id, is_active)
+      VALUES ${values
+        .map(
+          (_, index) =>
+            `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`,
+        )
+        .join(', ')}
+      ON CONFLICT (role_id, permission_id)
+      DO UPDATE SET is_active = excluded.is_active
+    `;
+    // await this.rolePermissionRepository.manager.query(
+    //   `ALTER TABLE role_permission DROP CONSTRAINT role_permission_unique_role_id_permission_id`,
+    // );
+    // Create a unique constraint on role_id and permission_id if it doesn't exist
+    await this.rolePermissionRepository.manager.query(`
+        ALTER TABLE role_permission
+        ADD CONSTRAINT role_permission_unique_role_id_permission_id
+        UNIQUE (role_id, permission_id);
+      `);
+
+    // Insert the data
+    await this.rolePermissionRepository.manager.query(query, values.flat());
+    await this.rolePermissionRepository.manager.query(
+      `ALTER TABLE role_permission DROP CONSTRAINT role_permission_unique_role_id_permission_id`,
     );
-
-    /**
-     const existingPermissionIds = role.permissions.map(permission => permission.id);
-    const newPermissionIds = permissionIds.filter(permissionId => !existingPermissionIds.includes(permissionId));
-    const removedPermissionIds = existingPermissionIds.filter(permissionId => !permissionIds.includes(permissionId));
-
-    if (newPermissionIds.length > 0) {
-      const newPermissions = await this.permissionRepository.findByIds(newPermissionIds);
-      role.permissions = [...role.permissions, ...newPermissions];
-
-      const rolePermissionRecords = newPermissions.map(permission => ({ roleId, permissionId: permission.id }));
-      await this.rolePermissionRepository.insert(rolePermissionRecords);
-    }
-
-    if (removedPermissionIds.length > 0) {
-      role.permissions = role.permissions.filter(permission => !removedPermissionIds.includes(permission.id));
-
-      await this.rolePermissionRepository.delete({ roleId, permissionId: removedPermissionIds });
-    }
-
-    await this.roleRepository.save(role);
-    
-    */
+    return {
+      statusCode: HttpStatus.OK,
+    };
   }
 }

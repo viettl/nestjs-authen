@@ -8,25 +8,25 @@ import { PermissionsEntity } from './permissions';
 })
 export class RolePermissionEntity extends BaseEntity {
   @Column({ default: true })
-  isActive!: boolean;
+  is_active!: boolean;
 
   @ManyToOne(
     (type) => RolesEntity,
-    (role: RolesEntity) => role.rolePermission,
+    (role: RolesEntity) => role.role_permission,
     {
       cascade: true,
     },
   )
-  @JoinColumn({ name: 'roleId' })
+  @JoinColumn({ name: 'role_id' })
   role: RolesEntity;
 
   @ManyToOne(
     (type) => PermissionsEntity,
-    (permit: PermissionsEntity) => permit.rolePermission,
+    (permit: PermissionsEntity) => permit.role_permission,
     {
       cascade: true,
     },
   )
-  @JoinColumn({ name: 'permissionId' })
+  @JoinColumn({ name: 'permission_id' })
   permission: Partial<PermissionsEntity>;
 }

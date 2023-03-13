@@ -9,11 +9,11 @@ export class RolesEntity extends BaseEntity {
   name: string;
 
   @Column({ default: false })
-  isCustomRole!: boolean;
+  is_custom_role!: boolean;
 
   @OneToMany(() => UserRoleEntity, (userRole: UserRoleEntity) => userRole.role)
-  // @JoinColumn({ referencedColumnName: 'roleId' })
-  userRole!: Partial<UserRoleEntity>[];
+  // @JoinColumn({ referencedColumnName: 'role_id' })
+  user_role!: Partial<UserRoleEntity>[];
 
   @OneToMany(
     () => RolePermissionEntity,
@@ -22,12 +22,12 @@ export class RolesEntity extends BaseEntity {
       // cascade: true,
     },
   )
-  rolePermission!: RolePermissionEntity[];
+  role_permission!: RolePermissionEntity[];
 
   @Column({ nullable: true })
   description: string;
 
   // role inherit from other role -> use for custom role purpose
   @Column({ nullable: true })
-  inheritedFromRoleId!: string;
+  inherited_from_role_id!: string;
 }

@@ -13,10 +13,10 @@ export class CreateRoleDto {
   description?: string;
 
   @ApiProperty()
-  isCustomRole?: boolean;
+  is_custom_role?: boolean;
 
   @ApiProperty()
-  inheritedFromRoleId?: string;
+  inherited_from_role_id?: string;
 
   @ApiProperty({})
   permissions?: CreatePermissionDto[];

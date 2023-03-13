@@ -16,6 +16,7 @@ export class RolesController {
     const roles = await this.rolesService.findAll();
     console.log(roles);
     return {
+      statusCode: HttpStatus.OK,
       data: roles,
     };
   }

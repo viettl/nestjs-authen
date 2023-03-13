@@ -10,14 +10,14 @@ export class UserRoleService {
     private userRoleRepository: Repository<UserRoleEntity>,
   ) {}
 
-  async getUserRole(userId: string) {
+  async getUserRole(user_id: string) {
     const userRoles = await this.userRoleRepository.query(
       `
       SELECT r.id, r.name
       FROM user_role ur
-      LEFT JOIN roles r ON r.id = ur."roleId"
-      WHERE ur."userId" = $1`,
-      [userId],
+      LEFT JOIN roles r ON r.id = ur."role_id"
+      WHERE ur."user_id" = $1`,
+      [user_id],
     );
 
     return userRoles;

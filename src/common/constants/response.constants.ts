@@ -6,3 +6,4 @@ export const USER_DELETED = 'User Deleted';
 
 export const ROLE_CREATED = 'Role Created';
 export const PERMISSION_ADDED_TO_ROLE = 'Permission Added To Role';
+export const PERMISSION_UPDATED_TO_ROLE = 'Permission Updated To Role';

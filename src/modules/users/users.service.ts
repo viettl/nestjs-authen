@@ -83,13 +83,13 @@ export class UsersService {
 
   /**
    *
-   * @param userId
+   * @param user_id
    * @returns
    */
   async getUserPermissions(
-    userId: string,
+    user_id: string,
   ): Promise<{ permissions: []; role: string }> {
-    const userRoles = await this.userRoleService.getUserRole(userId);
+    const userRoles = await this.userRoleService.getUserRole(user_id);
     // Except for Admin, check all roles
     if (userRoles.length !== 0 && userRoles[0].name !== UserRoles.ADMIN) {
       const permissions = await this.rolePermissionServices.getRolePermission(

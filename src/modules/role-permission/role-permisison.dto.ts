@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator';
 export class CreateRoleWithPermissionsDto {
   @ApiProperty()
   @IsNotEmpty()
-  roleId: string;
+  role_id: string;
 
   @ApiProperty({})
   @IsNotEmpty()

@@ -3,23 +3,23 @@ import { RolesEntity } from './roles';
 import { UserEntity } from './users';
 import { BaseEntity } from '../common/bases/base.entity';
 
-@Entity('user_role')
+@Entity({ name: 'user_role' })
 export class UserRoleEntity extends BaseEntity {
   @Column({ default: true })
-  isActive!: boolean;
+  is_active!: boolean;
 
-  @ManyToOne((type) => RolesEntity, (role: RolesEntity) => role.userRole, {
+  @ManyToOne((type) => RolesEntity, (role: RolesEntity) => role.user_role, {
     cascade: true,
     eager: true,
   })
-  @JoinColumn({ name: 'roleId' })
+  @JoinColumn({ name: 'role_id' })
   // @JoinColumn()
   role: RolesEntity;
 
-  @ManyToOne((type) => UserEntity, (user: UserEntity) => user.userRole, {
+  @ManyToOne((type) => UserEntity, (user: UserEntity) => user.user_role, {
     cascade: true,
   })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 }
 

@@ -65,9 +65,13 @@ export class UsersController {
   @Get('/profile')
   @ApiOperation({ summary: 'Fetch information' })
   @UseGuards(JwtGuard)
-  getProfile(@GetProfile() user: UserEntity): UserDto {
+  getProfile(@GetProfile() user: UserEntity): Partial<UserDto | any> {
     // console.log({ req });
-    return new UserDto(user);
+    const userInfo = new UserDto(user) as any;
+    return {
+      userInfo,
+      statusCode: HttpStatus.OK,
+    };
     //
   }
 
@@ -79,6 +83,7 @@ export class UsersController {
   @Auth()
   updatePassword(@Req() req: Request) {
     return {
+      statusCode: HttpStatus.OK,
       data: req.user,
     };
   }
@@ -88,6 +93,7 @@ export class UsersController {
   async findAll() {
     const users = await this.usersService.findAll();
     return {
+      statusCode: HttpStatus.OK,
       data: users,
     };
   }

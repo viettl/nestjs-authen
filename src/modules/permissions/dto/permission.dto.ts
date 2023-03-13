@@ -7,3 +7,11 @@ export class AssignPermissionDto {
   @ApiProperty()
   permissions: string[];
 }
+
+export class CreatePermissionDto {
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  description: string;
+}

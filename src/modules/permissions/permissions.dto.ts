@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreatePermissionDto {
   @ApiProperty()
@@ -11,6 +11,5 @@ export class CreatePermissionDto {
   description?: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  isActive: boolean;
+  is_active: boolean;
 }

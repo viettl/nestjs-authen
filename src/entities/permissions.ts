@@ -14,5 +14,5 @@ export class PermissionsEntity extends BaseEntity {
     () => RolePermissionEntity,
     (permission: RolePermissionEntity) => permission.permission,
   )
-  rolePermission!: RolePermissionEntity[];
+  role_permission!: RolePermissionEntity[];
 }

@@ -14,7 +14,10 @@ export class PermissionsService extends BaseService<PermissionsEntity> {
   }
 
   async create(permission) {
-    const permissionCreated = await this.permissionRepository.save(permission);
+    const permissionCreated = await this.permissionRepository.save({
+      ...permission,
+      is_active: true,
+    });
     return permissionCreated;
   }
 

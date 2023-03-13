@@ -35,7 +35,10 @@ export abstract class BaseService<T> {
 
   async findByIds(ids: any[]): Promise<T[]> {
     const queryBuilder = this.repository.createQueryBuilder();
+    // console.log('queryBuilder', queryBuilder);
+    console.log('ids', ids);
     const entities = await queryBuilder.whereInIds(ids).getMany();
+    console.log('entities', entities);
     if (entities.length !== ids.length) {
       const notFoundIds = ids.filter(
         (id) => !entities.find((entity) => entity['id'] === id),

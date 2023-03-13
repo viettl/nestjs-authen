@@ -50,13 +50,13 @@ export class AuthService {
     }
   }
 
-  protected async generateTokenResponse(userId: string) {
-    const accessToken = await this.generateAccessToken(userId);
-    const refreshToken = await this.generateRefreshToken(userId);
+  protected async generateTokenResponse(user_id: string) {
+    const accessToken = await this.generateAccessToken(user_id);
+    const refreshToken = await this.generateRefreshToken(user_id);
 
     this.logger.debug(
       `Generated access/refresh Token with payload ${JSON.stringify({
-        userId,
+        user_id,
       })}`,
     );
     return new TokenPayLoadDto({
@@ -66,9 +66,9 @@ export class AuthService {
     });
   }
 
-  protected async generateRefreshToken(userId: string) {
+  protected async generateRefreshToken(user_id: string) {
     const payload: JwtPayload = {
-      userId,
+      user_id,
       tokenType: TokenType.ACCESS_TOKEN,
     };
     const refreshToken = this.jwtService.sign(payload, {
@@ -79,15 +79,15 @@ export class AuthService {
     });
     const tokenObject = {
       token: refreshToken,
-      userId,
+      user_id,
     };
     await this.refreshTokenRepository.save(tokenObject);
     return refreshToken;
   }
 
-  protected generateAccessToken(userId: string) {
+  protected generateAccessToken(user_id: string) {
     const payload: JwtPayload = {
-      userId,
+      user_id,
       tokenType: TokenType.ACCESS_TOKEN,
     };
 
@@ -111,7 +111,7 @@ export class AuthService {
     }
     try {
       await this.refreshTokenRepository.delete({ id: token.id });
-      const tokenResponse = await this.generateTokenResponse(token.userId);
+      const tokenResponse = await this.generateTokenResponse(token.user_id);
       return tokenResponse;
     } catch (error) {
       throw new InternalServerErrorException(error);

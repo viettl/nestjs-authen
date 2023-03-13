@@ -1,8 +1,8 @@
 import {
   ROLE_CREATED,
-  PERMISSION_ADDED_TO_ROLE,
+  PERMISSION_UPDATED_TO_ROLE,
 } from '@/common/constants/response.constants';
-import { Permissions, Roles } from '@/common/decorators';
+import { Roles } from '@/common/decorators';
 import { ResponseMessage } from '@/common/decorators/response.decorator';
 import { Auth } from '@/common/decorators/role.decorator';
 import { UserRoles } from '@/common/interfaces/IUser';
@@ -10,9 +10,11 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -32,13 +34,14 @@ export class RolePermissionController {
   @Get(':roleId/permissions')
   async getPermissionsOfRole(
     @Param('roleId', ParseUUIDPipe)
-    roleId: string,
+    role_id: string,
   ) {
     // const;
     const permissions = await this.rolePermissionService.getPermissionsOfRole(
-      roleId,
+      role_id,
     );
     return {
+      statusCode: HttpStatus.OK,
       data: permissions,
     };
   }
@@ -56,22 +59,22 @@ export class RolePermissionController {
       const newRole = {
         name: body.name,
         description: body.description,
-        isCustomRole: true,
-        inheritedFromRoleId: body.inheritedFromRoleId,
+        is_custom_role: true,
+        inherited_from_role_id: body.inherited_from_role_id,
       };
 
       const roleCreated = await this.rolePermissionService.createCustomRole(
         newRole,
         body.permissions,
       );
-
-      const rolePermissionsCreated =
-        await this.rolePermissionService.createRoleWithPermissions({
-          roleId: roleCreated.id,
-          permissions: body.permissions,
-        });
+      // const rolePermissionsCreated =
+      //   await this.rolePermissionService.createRoleWithPermissions({
+      //     roleId: roleCreated.id,
+      //     permissions: body.permissions,
+      //   });
 
       return {
+        statusCode: HttpStatus.OK,
         data: roleCreated,
       };
     } catch (error) {
@@ -81,28 +84,43 @@ export class RolePermissionController {
 
   @Post('/assigns')
   // @UsePipes(ValidationPipe)
-  @Roles(UserRoles.ADMIN)
-  @Permissions(UserRoles.ADMIN)
+  // @Roles(UserRoles.ADMIN)
+  // @Permissions(UserRoles.ADMIN)
   @Auth()
   // @UseGuards(JwtGuard)
-  @ResponseMessage(PERMISSION_ADDED_TO_ROLE)
+  @ResponseMessage(PERMISSION_UPDATED_TO_ROLE)
   async addPermissionsToRole(
     @Body()
-    body: any,
+    body: {
+      roleId: string;
+      permissionsIds: string[];
+    },
   ) {
     try {
-      const role = this.rolesService.findById(body?.roleId);
+      const role = await this.rolesService.findById(body?.roleId);
       if (!role) {
         throw new Error('Role not found');
       }
 
-      // return {
-      // statusCode: HttpStatus.OK,
-      // data: permissions,
-      // };
+      await this.rolePermissionService.updateRolePermissions(
+        body.roleId,
+        body.permissionsIds,
+      );
+
+      return {
+        statusCode: HttpStatus.OK,
+        // data: permissions,
+      };
       // update the permissions of the role
     } catch (error) {
       throw error;
     }
+  }
+
+  @Put('/test')
+  async putTest() {
+    return {
+      data: 'put test',
+    };
   }
 }

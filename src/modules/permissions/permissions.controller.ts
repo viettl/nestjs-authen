@@ -11,6 +11,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ResponseMessage } from '@/common/decorators/response.decorator';
 import { USER_CREATED } from '../../common/constants/response.constants';
+import { CreatePermissionDto } from '@/modules/permissions/permissions.dto';
 
 @ApiTags('permissions')
 @Controller('permissions')
@@ -25,7 +26,7 @@ export class PermissionsController {
   @Post('/')
   @UsePipes(ValidationPipe)
   @ResponseMessage(USER_CREATED)
-  async create(@Body() permission: any) {
+  async create(@Body() permission: CreatePermissionDto) {
     try {
       const permissionCreated = await this.permissionsService.create(
         permission,
