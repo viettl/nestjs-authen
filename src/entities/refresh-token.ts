@@ -1,14 +1,14 @@
-import { BaseEntity } from 'src/common/bases/base.entity';
+import { BaseEntity } from '../common/bases/base.entity';
 import { Column, Entity } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'refresh_tokens' })
 export class RefreshTokenEntity extends BaseEntity {
   @Column()
-  userId: string;
+  user_id: string;
 
-  @Column({ unique: true })
+  @Column()
   token: string;
 
   @Column({ default: true })
-  isActive: boolean;
+  is_active: boolean;
 }

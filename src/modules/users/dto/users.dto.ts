@@ -18,7 +18,7 @@ export class UserDto extends BaseDto {
   gender: Gender;
 
   @ApiPropertyOptional()
-  phoneNumber: string;
+  phone_number: string;
 
   constructor(user: UserEntity) {
     super(user);
@@ -26,7 +26,7 @@ export class UserDto extends BaseDto {
     this.role = user.role;
     this.email = user.email;
     this.gender = user.gender;
-    this.phoneNumber = user.phoneNumber;
+    this.phone_number = user.phone_number;
   }
 }
 

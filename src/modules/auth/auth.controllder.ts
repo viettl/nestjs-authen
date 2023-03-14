@@ -7,11 +7,10 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
-  Res,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { TokenPayLoadDto } from './dto/token.dto';
+import { TokenPayLoadDto, RefreshTokenDto } from './dto/token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,13 +24,46 @@ export class AuthController {
     description: 'User info with access/refresh token',
   })
   @UsePipes(ValidationPipe)
-  async login(@Res() res, @Body() userLoginDto: LoginDto) {
+  // @ResponseMessage(USER_UPDATED)
+  async login(@Body() userLoginDto: LoginDto) {
     try {
       const tokenPayload = await this.authService.login(userLoginDto);
-      return res.status(HttpStatus.OK).json(tokenPayload);
+      return {
+        statusCode: HttpStatus.OK,
+        data: { ...tokenPayload },
+      };
     } catch (error) {
       throw error;
     }
     //
   }
+
+  @Post('/refresh-token')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    type: TokenPayLoadDto,
+    description: 'User info with access/refresh token',
+  })
+  @UsePipes(ValidationPipe)
+  async refreshToken(@Body() tokenPayloadDto: RefreshTokenDto) {
+    try {
+      const tokenPayload = await this.authService.getRefreshToken(
+        tokenPayloadDto,
+      );
+      return {
+        statusCode: HttpStatus.OK,
+        data: { ...tokenPayload },
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // // test role admin only
+  // @Post('/test-role')
+  // @HttpCode(HttpStatus.OK)
+  // @ApiResponse({
+  //   description: "User can't access this route",
+  // })
+  // @Auth
 }

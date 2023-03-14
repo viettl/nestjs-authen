@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
-const SALT = 'Vietk123213';
+const SALT = bcrypt.genSaltSync(10);
 export const hashPassword = async (
   password: string,
   salt: string = SALT,

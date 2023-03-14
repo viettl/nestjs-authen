@@ -1,21 +1,43 @@
+import { PermissionsEntity } from '@/entities';
+import { RefreshTokenEntity } from '@/entities/refresh-token';
+import { RolesEntity } from '@/entities/roles';
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { UserRoleEntity } from '../../entities/user_role';
+import { UserEntity } from '../../entities/users';
+import { UserModule } from '../users/users.module';
+import { RolePermissionEntity } from './../../entities/role_permission';
 import { AuthController } from './auth.controllder';
 import { AuthService } from './auth.service';
-import { UserEntity } from 'src/entities/users';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
 import { JwtStrategy } from './jwt.strategy';
-import { RefreshTokenEntity } from '@/entities/refresh-token';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 
 @Module({
   imports: [
     ConfigModule,
-    // UserModule,
-    TypeOrmModule.forFeature([UserEntity, RefreshTokenEntity]),
+    UserModule,
+    TypeOrmModule.forFeature([
+      UserEntity,
+      RefreshTokenEntity,
+      UserRoleEntity,
+      RolesEntity,
+      RolePermissionEntity,
+      PermissionsEntity,
+    ]),
   ],
-  providers: [JwtStrategy, AuthService, JwtService, UsersService],
+  providers: [
+    JwtStrategy,
+    AuthService,
+    JwtService,
+    // UsersService,
+    // RolePermissionService,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransformInterceptor,
+    // },
+  ],
   controllers: [AuthController],
   exports: [],
 })

@@ -1,9 +1,13 @@
 import { LoginDto } from './dto/login.dto';
-import { TokenPayLoadDto } from './dto/token.dto';
+import { RefreshTokenDto, TokenPayLoadDto } from './dto/token.dto';
 import { TokenType } from './../../common/constants/token-type';
 import { JwtPayload } from './../../common/interfaces/IJwtPayload';
 import { UsersService } from './../users/users.service';
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -46,13 +50,13 @@ export class AuthService {
     }
   }
 
-  protected async generateTokenResponse(userId: string) {
-    const accessToken = await this.generateAccessToken(userId);
-    const refreshToken = await this.generateRefreshToken(userId);
+  protected async generateTokenResponse(user_id: string) {
+    const accessToken = await this.generateAccessToken(user_id);
+    const refreshToken = await this.generateRefreshToken(user_id);
 
     this.logger.debug(
       `Generated access/refresh Token with payload ${JSON.stringify({
-        userId,
+        user_id,
       })}`,
     );
     return new TokenPayLoadDto({
@@ -62,9 +66,9 @@ export class AuthService {
     });
   }
 
-  protected async generateRefreshToken(userId: string) {
+  protected async generateRefreshToken(user_id: string) {
     const payload: JwtPayload = {
-      userId,
+      user_id,
       tokenType: TokenType.ACCESS_TOKEN,
     };
     const refreshToken = this.jwtService.sign(payload, {
@@ -75,15 +79,15 @@ export class AuthService {
     });
     const tokenObject = {
       token: refreshToken,
-      userId,
+      user_id,
     };
     await this.refreshTokenRepository.save(tokenObject);
     return refreshToken;
   }
 
-  protected generateAccessToken(userId: string) {
+  protected generateAccessToken(user_id: string) {
     const payload: JwtPayload = {
-      userId,
+      user_id,
       tokenType: TokenType.ACCESS_TOKEN,
     };
 
@@ -94,5 +98,23 @@ export class AuthService {
       )}`,
     });
     return jwt;
+  }
+
+  async getRefreshToken(
+    refreshToken: RefreshTokenDto,
+  ): Promise<TokenPayLoadDto> {
+    const token = await this.refreshTokenRepository.findOne({
+      where: { token: refreshToken.token },
+    });
+    if (!token) {
+      throw new Error('Invalid refresh token');
+    }
+    try {
+      await this.refreshTokenRepository.delete({ id: token.id });
+      const tokenResponse = await this.generateTokenResponse(token.user_id);
+      return tokenResponse;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }

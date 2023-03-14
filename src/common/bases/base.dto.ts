@@ -12,4 +12,5 @@ export class BaseDto {
     this.createdAt = entity.createdAt;
     this.updatedAt = entity.updatedAt;
   }
+
 }

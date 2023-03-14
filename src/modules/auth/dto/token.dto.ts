@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsJWT } from 'class-validator';
 
 export class TokenPayLoadDto {
   @ApiProperty()
@@ -26,4 +27,10 @@ export class TokenPayLoadDto {
     this.refreshToken = refreshToken;
     this.tokenType = tokenType;
   }
+}
+
+export class RefreshTokenDto {
+  @ApiProperty()
+  @IsJWT()
+  token: string;
 }

@@ -1,10 +1,11 @@
+import { UserRoleEntity } from './user_role';
+import { Gender, UserRoles } from '../common/interfaces/IUser';
 import { Exclude } from 'class-transformer';
 import { IsString, MaxLength } from 'class-validator';
-import BaseEntity from 'src/common/bases/base.entity';
-import { Gender, UserRoles } from 'src/common/interfaces/IUser';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { BaseEntity } from '../common/bases/base.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
@@ -36,6 +37,16 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'enum', enum: UserRoles, default: UserRoles.USER })
   role: UserRoles;
+
+  @OneToMany(() => UserRoleEntity, (role: UserRoleEntity) => role.user, {})
+  // @JoinColumn({ referencedColumnName: 'userId' })
+  // @JoinColumn()
+  // { referencedColumnName: 'userId' }
+  user_role!: Partial<UserRoleEntity>[];
+
   @Column({ unique: true, nullable: true })
-  phoneNumber: string;
+  phone_number: string;
+
+  @Column({ nullable: true })
+  is_modified_role: boolean;
 }
