@@ -58,12 +58,14 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+# pg admin
+`` http://localhost/login?next=/
 
 ```bash
 # create migration
 $ npm run typeorm:generate-migration --name=CreatePost
 
-# generate 
+# generate
 $ npm run typeorm:run-migrations```
 ## Support
 
