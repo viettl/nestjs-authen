@@ -16,6 +16,7 @@ export const winstonOptions: WinstonModuleOptions = {
         nestWinstonModuleUtilities.format.nestLike(),
       ),
       filename: 'app.log',
+      level: 'info',
     }),
   ],
 };
